@@ -1,0 +1,117 @@
+apt update && apt upgrade -y && apt install systemctl nano wget curl net-tools -y && apt autoremove -y
+
+curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
+
+bash nodesource_setup.sh
+
+apt install nodejs -y
+
+echo "deb http://old-releases.ubuntu.com/ubuntu impish-security main" > /etc/apt/sources.list.d/impish-security.list
+
+apt-get update
+
+apt-get install libssl1.1 -y
+
+curl -fsSL https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
+
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" > /etc/apt/sources.list.d/mongodb-org-4.4.list
+
+apt update
+
+apt install mongodb-org -y
+
+systemctl start mongod.service
+
+mongo --eval 'db.runCommand({ connectionStatus: 1 })'
+
+npm install -g genieacs@1.2.9
+
+useradd --system --no-create-home --user-group genieacs
+
+mkdir /opt/genieacs
+
+mkdir /opt/genieacs/ext
+
+chown genieacs:genieacs /opt/genieacs/ext
+
+echo "GENIEACS_CWMP_ACCESS_LOG_FILE=/var/log/genieacs/genieacs-cwmp-access.log
+GENIEACS_NBI_ACCESS_LOG_FILE=/var/log/genieacs/genieacs-nbi-access.log
+GENIEACS_FS_ACCESS_LOG_FILE=/var/log/genieacs/genieacs-fs-access.log
+GENIEACS_UI_ACCESS_LOG_FILE=/var/log/genieacs/genieacs-ui-access.log
+GENIEACS_DEBUG_FILE=/var/log/genieacs/genieacs-debug.yaml
+NODE_OPTIONS=--enable-source-maps
+GENIEACS_EXT_DIR=/opt/genieacs/ext" >> /opt/genieacs/genieacs.env
+
+node -e "console.log(\"GENIEACS_UI_JWT_SECRET=\" + require('crypto').randomBytes(128).toString('hex'))" >> /opt/genieacs/genieacs.env
+
+chown genieacs:genieacs /opt/genieacs/genieacs.env
+
+chmod 777 /opt/genieacs/genieacs.env
+
+mkdir /var/log/genieacs
+
+chown genieacs:genieacs /var/log/genieacs
+
+
+echo "[Unit]
+Description=GenieACS CWMP
+After=network.target
+
+[Service]
+User=genieacs
+EnvironmentFile=/opt/genieacs/genieacs.env
+ExecStart=/usr/bin/genieacs-cwmp
+
+[Install]
+WantedBy=default.target" >> /etc/systemd/system/genieacs-cwmp
+
+
+echo "[Unit]
+Description=GenieACS NBI
+After=network.target
+
+[Service]
+User=genieacs
+EnvironmentFile=/opt/genieacs/genieacs.env
+ExecStart=/usr/bin/genieacs-nbi
+
+[Install]
+WantedBy=default.target" >> /etc/systemd/system/genieacs-nbi
+
+
+echo "[Unit]
+Description=GenieACS FS
+After=network.target
+
+[Service]
+User=genieacs
+EnvironmentFile=/opt/genieacs/genieacs.env
+ExecStart=/usr/bin/genieacs-fs
+
+[Install]
+WantedBy=default.target" >> /etc/systemd/system/genieacs-fs
+
+
+
+echo "[Unit]
+Description=GenieACS UI
+After=network.target
+
+[Service]
+User=genieacs
+EnvironmentFile=/opt/genieacs/genieacs.env
+ExecStart=/usr/bin/genieacs-ui
+
+[Install]
+WantedBy=default.target" >> /etc/systemd/system/genieacs-ui
+
+chmod 777 /etc/systemd/system/genieacs-cwmp /etc/systemd/system/genieacs-fs /etc/systemd/system/genieacs-nbi /etc/systemd/system/genieacs-ui
+
+echo "/var/log/genieacs/*.log /var/log/genieacs/*.yaml {
+    daily
+    rotate 30
+    compress
+    delaycompress
+    dateext
+}
+" /etc/logrotate.d/genieacs
