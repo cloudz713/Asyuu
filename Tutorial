@@ -1,3 +1,7 @@
+Siapkan bahan bahan.
+-Putty
+-WinSCP
+
 Create Docker Mikrotik dengan docker devdotnetorg/openssh-server:ubuntu-20.04
 setelah selesai
 Buka terminal
