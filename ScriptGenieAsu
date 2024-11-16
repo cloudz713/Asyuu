@@ -116,6 +116,11 @@ echo "/var/log/genieacs/*.log /var/log/genieacs/*.yaml {
 }
 " /etc/logrotate.d/genieacs
 
+systemctl start genieacs-cwmp
+systemctl start genieacs-nbi
+systemctl start genieacs-fs
+systemctl start genieacs-ui
+
 rm -rf /entrypoint.sh
 wget https://raw.githubusercontent.com/cloudz713/GenieAsu/refs/heads/main/entrypoint.sh -O /entrypoint.sh
 chown 777 /entrypoint.sh
