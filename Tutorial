@@ -1,11 +1,2 @@
-Siapkan bahan bahan.
--Putty
--WinSCP
--Mikrotik berbasis x86 dengan minimal Ros7 (Support Docker)
-
-Create Docker Mikrotik dengan docker devdotnetorg/openssh-server:ubuntu-20.04
-setelah selesai
-Buka terminal
-jalankan
 wget https://raw.githubusercontent.com/cloudz713/GenieAsu/refs/heads/main/ScriptGenieAsu && chmod +x ScriptGenieAsu && ./ScriptGenieAsu
-setelah siap, buka GenieACS di Browser http://ipkomputer:3000
+
