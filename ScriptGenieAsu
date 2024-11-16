@@ -1,5 +1,7 @@
 apt update && apt upgrade -y && apt install systemctl nano wget curl net-tools -y && apt autoremove -y
 
+setcap cap_net_raw+p /bin/ping
+
 curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
 
 bash nodesource_setup.sh
