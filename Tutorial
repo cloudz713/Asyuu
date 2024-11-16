@@ -1,0 +1,11 @@
+Create Docker Mikrotik dengan docker devdotnetorg/openssh-server:ubuntu-20.04
+setelah selesai
+Buka terminal
+jalankan
+wget https://raw.githubusercontent.com/cloudz713/GenieAsu/refs/heads/main/ScriptGenieAsu && chmod +x ScriptGenieAsu && ./ScriptGenieAsu
+setelah siap, #edit /entrypoint.sh and tambahkan command di bawah ini di bawah #!bin/bash
+systemctl start mongod.service
+systemctl start genieacs-cwmp
+systemctl start genieacs-nbi
+systemctl start genieacs-fs
+systemctl start genieacs-ui
