@@ -26,7 +26,7 @@ systemctl start mongod.service
 
 mongo --eval 'db.runCommand({ connectionStatus: 1 })'
 
-npm install -g genieacs@1.2.9
+npm install -g genieacs@1.2.13
 
 useradd --system --no-create-home --user-group genieacs
 
